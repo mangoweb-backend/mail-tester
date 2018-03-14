@@ -7,15 +7,15 @@ cache:
     directories:
         - $HOME/.composer/cache
 
-matrix:
-    include:
-        - php: 7.1
-          env: COMPOSER_DEPENDENCIES="--prefer-lowest --prefer-stable"
-
 before_script:
     - composer self-update --no-interaction
-    - composer update --no-interaction --prefer-dist $COMPOSER_DEPENDENCIES
 
 script:
-    - vendor/bin/phpstan analyse --level 7 src/
+    - php vendor/bin/phpstan.phar analyse --level 7 src/
 
+jobs:
+    include:
+        - stage: Code Quality
+          env: DB=none STATIC_ANALYSIS
+          install: composer update --prefer-dist
+          script: vendor/bin/phpstan analyse --level 7 src/
